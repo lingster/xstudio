@@ -55,7 +55,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(JSON): result.
         """
-        return self.get(path + "/value")
+        return self.get(f"{path}/value")
 
     def default_value(self, path):
         """Get default value from store
@@ -66,7 +66,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(JSON): result.
         """
-        return self.get(path + "/default_value")
+        return self.get(f"{path}/default_value")
 
     def datatype(self, path):
         """Get datatype from store
@@ -77,7 +77,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(str): result.
         """
-        return self.get(path + "/datatype")
+        return self.get(f"{path}/datatype")
 
     def description(self, path):
         """Get description from store
@@ -88,7 +88,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(str): result.
         """
-        return self.get(path + "/description")
+        return self.get(f"{path}/description")
 
     def context(self, path):
         """Get context from store
@@ -99,7 +99,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(JSON): result.
         """
-        return self.get(path + "/context")
+        return self.get(f"{path}/context")
 
     def maximum(self, path):
         """Get maximum from store
@@ -110,7 +110,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(numeric): result.
         """
-        return self.get(path + "/maximum")
+        return self.get(f"{path}/maximum")
 
     def minimum(self, path):
         """Get minimum from store
@@ -121,7 +121,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(numeric): result.
         """
-        return self.get(path + "/minimum")
+        return self.get(f"{path}/minimum")
 
 
     def set_value(self, path, value):
@@ -134,7 +134,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(bool): result.
         """
-        return self.set(value, path + "/value")
+        return self.set(value, f"{path}/value")
 
     def set_maximum(self, path, value):
         """Set maximum in store
@@ -146,7 +146,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(bool): result.
         """
-        return self.set(value, path + "/maximum")
+        return self.set(value, f"{path}/maximum")
 
     def set_minimum(self, path, value):
         """Set minimum in store
@@ -158,7 +158,7 @@ class GlobalStore(JsonStorePy):
         Returns:
             result(bool): result.
         """
-        return self.set(value, path + "/minimum")
+        return self.set(value, f"{path}/minimum")
 
     def get_preferences(self, context=None):
         """Get preferences from store

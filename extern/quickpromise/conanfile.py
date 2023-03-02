@@ -22,21 +22,23 @@ class QuickPromiseConan(ConanFile):
 
     def make(self, args=[]):
         if platform.system() == "Windows":
-            self.run("nmake %s" % " ".join(args))
+            self.run(f'nmake {" ".join(args)}')
         else:
-            self.run("make %s" % " ".join(args))
+            self.run(f'make {" ".join(args)}')
 
     def qmake(self, args=[]):
-        cmd = "qmake %s" % (" ".join(args))
+        cmd = f'qmake {" ".join(args)}'
         self.run(cmd)
 
     def build(self):
-        args = ["%s/qml/qml.pro" % self.source_folder,
-                "INSTALL_ROOT=%s" % self.package_folder]
+        args = [
+            f"{self.source_folder}/qml/qml.pro",
+            f"INSTALL_ROOT={self.package_folder}",
+        ]
 
         if self.options.shared:
             args.append("SHARED=true")
-            
+
         self.qmake(args)
         self.make()
 

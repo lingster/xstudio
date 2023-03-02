@@ -41,21 +41,16 @@ class InteractiveSession(InteractiveInterpreter):
                 self.wants_input = False
                 self.needs_more = self.push(input_str)
 
-            if self.needs_more:
-                prompt = sys.ps2
-            else:
-                prompt = sys.ps1
-
+            prompt = sys.ps2 if self.needs_more else sys.ps1
             try:
                 self.raw_input(prompt)
             except EOFError:
                 self.write("\n")
                 # can't happen...
-        else:
-            if self.exitmsg is None:
-                self.write('now exiting %s...\n' % self.__class__.__name__)
-            elif self.exitmsg != '':
-                self.write('%s\n' % exitmsg)
+        elif self.exitmsg is None:
+            self.write('now exiting %s...\n' % self.__class__.__name__)
+        elif self.exitmsg != '':
+            self.write('%s\n' % exitmsg)
 
 
     def interact(self, banner, exitmsg=None):

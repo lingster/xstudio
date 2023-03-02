@@ -1,20 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
 """Wrapper."""
+
 import sys
 import os
 import xstudio
 from xstudio.connection import Connection
 from xstudio.core import *
 
-__DEBUG = False
-
 __SYNC = os.environ.get("XSTUDIOPY_SYNC","0").lower() in [
         'true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh'
     ]
 
-if os.environ.get("XSTUDIOPY_DEBUG", "False") == "True":
-    __DEBUG = True
-
+__DEBUG = os.environ.get("XSTUDIOPY_DEBUG", "False") == "True"
 if os.environ.get("XSTUDIOPY_HOST", None):
     XSTUDIO = Connection(
         debug=__DEBUG
@@ -41,11 +38,7 @@ elif os.environ.get("XSTUDIOPY_SESSION", None):
         print("Remote session not found")
 else:
     m = RemoteSessionManager(remote_session_path())
-    if __SYNC:
-        s = m.first_sync()
-    else:
-        s = m.first_api()
-
+    s = m.first_sync() if __SYNC else m.first_api()
     XSTUDIO = Connection(
         debug=__DEBUG
     )

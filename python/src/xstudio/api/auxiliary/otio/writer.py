@@ -92,9 +92,7 @@ def __process_obj(obj, otio, context=oTrack.Kind.Video):
         print("Clip")
         c = oClip()
         c.name = obj.name
-        # if has media.. add external reference.
-        media = obj.media
-        if media:
+        if media := obj.media:
             ext = ExternalReference(str(media.media_source().media_reference.uri()), TimeRange(RationalTime(ar.frame_start().frames(), ar.rate().fps()), RationalTime(ar.frame_duration().frames(), ar.rate().fps())))
             ext.name = media.name
             c.media_reference = ext

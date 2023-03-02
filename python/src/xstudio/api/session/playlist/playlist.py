@@ -63,13 +63,17 @@ class Playlist(Container):
         """
 
         if not isinstance(path, URI):
-            path = URI("file:///" + path)
+            path = URI(f"file:///{path}")
 
-        if not isinstance(media_rate, FrameRate):
-            result = self.connection.request_receive(self.remote, add_media_atom(), path, recurse)[0]
-        else:
-            result = self.connection.request_receive(self.remote, add_media_atom(), path, recurse, media_rate)[0]
-
+        result = (
+            self.connection.request_receive(
+                self.remote, add_media_atom(), path, recurse, media_rate
+            )[0]
+            if isinstance(media_rate, FrameRate)
+            else self.connection.request_receive(
+                self.remote, add_media_atom(), path, recurse
+            )[0]
+        )
         return [Media(self.connection, i.actor, i.uuid) for i in result]
 
     def add_media_with_audio(self, image_path, audio_path, audio_offset=0):
@@ -89,14 +93,17 @@ class Playlist(Container):
         else:
             ppp = parse_posix_path(image_path)
 
-            if not str(ppp[1]):
-                result = self.connection.request_receive(self.remote, add_media_atom(), image_path, ppp[0])[0]
-            else:
-                result = self.connection.request_receive(self.remote, add_media_atom(), image_path, ppp[0], ppp[1])[0]
-
+            result = (
+                self.connection.request_receive(
+                    self.remote, add_media_atom(), image_path, ppp[0], ppp[1]
+                )[0]
+                if str(ppp[1])
+                else self.connection.request_receive(
+                    self.remote, add_media_atom(), image_path, ppp[0]
+                )[0]
+            )
         media = Media(self.connection, result.actor, result.uuid)
-        audiosource = media.add_media_source(audio_path)
-        if audiosource:
+        if audiosource := media.add_media_source(audio_path):
             if audio_offset != 0:
                 mr = audiosource.media_reference
                 mr.set_offset(audio_offset)
@@ -120,11 +127,15 @@ class Playlist(Container):
         else:
             ppp = parse_posix_path(path)
 
-            if not str(ppp[1]):
-                result = self.connection.request_receive(self.remote, add_media_atom(), path, ppp[0])[0]
-            else:
-                result = self.connection.request_receive(self.remote, add_media_atom(), path, ppp[0], ppp[1])[0]
-
+            result = (
+                self.connection.request_receive(
+                    self.remote, add_media_atom(), path, ppp[0], ppp[1]
+                )[0]
+                if str(ppp[1])
+                else self.connection.request_receive(
+                    self.remote, add_media_atom(), path, ppp[0]
+                )[0]
+            )
         return Media(self.connection, result.actor, result.uuid)
 
     @property

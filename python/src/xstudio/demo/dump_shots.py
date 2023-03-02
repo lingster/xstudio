@@ -26,7 +26,7 @@ def dump_shots(session):
                 pass
 
     for i in sorted(shot_flags.keys()):
-        print ("'"+i+"','"+ ",".join(shot_flags[i])+"'" )
+        print(f"'{i}','" + ",".join(shot_flags[i]) + "'")
 
 
 def render_all_annotations(session):

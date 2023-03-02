@@ -31,12 +31,8 @@ class ColorPrint:
 def crossref_qml_file_and_classes(qml_classes, qml_file, reference_dict):
 
     print (qml_file)
-    m = re.search(
-            "\\/([^\\/]+)\\.qml",
-            str(qml_file)
-            )
-    if m:
-        qml_foo = m.group(1)
+    if m := re.search("\\/([^\\/]+)\\.qml", str(qml_file)):
+        qml_foo = m[1]
     else:
         return 
 
@@ -57,7 +53,7 @@ def crossref_qml_file_and_classes(qml_classes, qml_file, reference_dict):
 
             if m or n:
                 if qml_class in reference_dict:
-                    if not qml_foo in reference_dict[qml_class]:
+                    if qml_foo not in reference_dict[qml_class]:
                         reference_dict[qml_class].append(qml_foo)
                 else:
                     reference_dict[qml_class] = [qml_foo]
@@ -70,21 +66,15 @@ def modify_qml_qrc(unwanted):
     with open("ui/qml/xstudio/qml.qrc") as f:
         with open("ui/qml/xstudio/qml.qrc.new", "w") as fout:
 
-            line = f.readline()
-            while line:
-
+            while line := f.readline():
                 m = re.search(
                         "(\\/|\\>)([^\\/]+)\\.qml",
                         line
                         )
 
-                if m and m.group(2) in unwanted:
-                    pass
-                else:
+                if not m or m[2] not in unwanted:
                     fout.write(line)
-                line = f.readline()
-
-    os.rename("ui/qml/xstudio/qml.qrc", "ui/qml/xstudio/qml.qrc.old")                
+    os.rename("ui/qml/xstudio/qml.qrc", "ui/qml/xstudio/qml.qrc.old")
     os.rename("ui/qml/xstudio/qml.qrc.new", "ui/qml/xstudio/qml.qrc")                
 
 def parse_qml_qrc():
@@ -92,17 +82,10 @@ def parse_qml_qrc():
     r = []
     with open("ui/qml/xstudio/qml.qrc") as f:
 
-        line = f.readline()
-        while line:
+        while line := f.readline():
+            if m := re.search("(\\/|\\>)([^\\/]+)\\.qml", line):
+                r.append(m[2])
 
-            m = re.search(
-                    "(\\/|\\>)([^\\/]+)\\.qml",
-                    line
-                    )
-            if m:
-                r.append(m.group(2))
-
-            line = f.readline()
     return r            
             
 
@@ -114,15 +97,17 @@ def get_root_reference(reference_dict, classname, chain=None):
     if "main" in reference_dict[classname]:
         return "main"
 
-    if chain == None:
+    if chain is None:
         chain = [classname]
 
-    for vr in reference_dict[classname]:
-
-        if get_root_reference(reference_dict, vr, chain + [vr]) == "main":
-            return "main"
-
-    return "not_main"
+    return next(
+        (
+            "main"
+            for vr in reference_dict[classname]
+            if get_root_reference(reference_dict, vr, chain + [vr]) == "main"
+        ),
+        "not_main",
+    )
 
 if __name__=="__main__":
 
@@ -135,12 +120,8 @@ if __name__=="__main__":
 
     for qml_file in Path('ui/qml/').rglob('*.qml'):
         crossref_qml_file_and_classes(qml_classes, qml_file, reference_dict)
-        m = re.search(
-            "\\/([^\\/]+)\\.qml",
-            str(qml_file)
-            )
-        if m:
-            classes_by_file[m.group(1)] = qml_file
+        if m := re.search("\\/([^\\/]+)\\.qml", str(qml_file)):
+            classes_by_file[m[1]] = qml_file
 
     for classname in reference_dict:
 
@@ -161,8 +142,6 @@ if __name__=="__main__":
         if get_root_reference(reference_dict, classname) == "main":
             
             continue
-            ColorPrint.print_info("The root of {0} is main".format(classname))
-
         else:                
 
             get_ridof.append(classname)
@@ -171,6 +150,6 @@ if __name__=="__main__":
     for unwanted in list(set(get_ridof)):
 
         unwanted_file = classes_by_file[unwanted]
-        os.rename(unwanted_file, str(unwanted_file) + '.todelete')
+        os.rename(unwanted_file, f'{str(unwanted_file)}.todelete')
 
 

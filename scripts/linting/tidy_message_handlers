@@ -98,41 +98,31 @@ def parse_behaviour_assign(original_code, position, reordered_code):
                 r_bracket_count -= 1
                 if r_bracket_count == 0:
                     break
-            m = re.match(
-                "\n([^\S\r\n]*)(\\[[^\\]]*\\]\\(\s*)",
-                original_code[position:]
-                )
-
-            if m:
+            if m := re.match(
+                "\n([^\S\r\n]*)(\\[[^\\]]*\\]\\(\s*)", original_code[position:]
+            ):
                 rr = re.match(
                     "\n([^\S\r\n]*)(\\[[^\\]]*\\]\\(\s*)[^\\)]+\\)[^\\{]+\\{",
                     original_code[position:]
                     )
-                if rr and "->" in rr.group(0):
-                    lambda_returns_something = True
-                else:
-                    lambda_returns_something = False
-
-
-                position += len(m.group(0))
+                lambda_returns_something = bool(rr and "->" in rr[0])
+                position += len(m[0])
                 inside = True
                 lambda_contents = ""
-                capt = m.group(1)+m.group(2)
+                capt = m[1] + m[2]
+            elif m := re.match(
+                "set_message_handler\\(.+return\s*\\{",
+                original_code[position:],
+            ):
+                reordered_code += m[0]
+                position += len(m[0])
+                r_bracket_count += 1
             else:
-                m = re.match(
-                    "set_message_handler\\(.+return\s*\\{",
-                    original_code[position:]
-                    )
-                if m:
-                    reordered_code += m.group(0)
-                    position += len(m.group(0))
-                    r_bracket_count += 1
+                if all_lambdas:
+                    tail += original_code[position]
                 else:
-                    if not all_lambdas:
-                        reordered_code += original_code[position]
-                    else:
-                        tail += original_code[position]
-                    position += 1
+                    reordered_code += original_code[position]
+                position += 1
         else:
             lambda_contents = lambda_contents + original_code[position]
             if original_code[position] == '{':
@@ -162,9 +152,8 @@ def parse_behaviour_assign(original_code, position, reordered_code):
             reordered_code += "\n"
             first = False
         if lambda_comment:
-            m = re.match("\s+", capt)
-            if m:
-                lambda_comment = m.group(0) + lambda_comment
+            if m := re.match("\s+", capt):
+                lambda_comment = m[0] + lambda_comment
             reordered_code += lambda_comment + "\n"
         reordered_code += capt
         reordered_code += lambda_contents

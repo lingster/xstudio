@@ -13,8 +13,8 @@ def control_main():
     """Do main function."""
     retval = 0
     parser = argparse.ArgumentParser(
-        description=__doc__ + " Controls xstudio.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        description=f"{__doc__} Controls xstudio.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     parser.add_argument(
@@ -78,32 +78,29 @@ def control_main():
 
     if args.info:
         print(
-            "    App: {}\n    API: {}\nVersion: {}\nSession: {}\n".format(
-                conn.app_type, conn.api_type,
-                conn.app_version, conn.api.app.session.name
-            )
+            f"    App: {conn.app_type}\n    API: {conn.api_type}\nVersion: {conn.app_version}\nSession: {conn.api.app.session.name}\n"
         )
         print("Playlists:")
         for p in conn.api.app.session.playlists:
-            print("\n  {}".format(p.name))
+            print(f"\n  {p.name}")
             print("\n     Media:")
             for m in p.media:
-                print("       {} {}".format(m.name, m.media_source().name))
+                print(f"       {m.name} {m.media_source().name}")
                 for s in m.media_sources:
-                    print("         {} {}".format(s.name, s.media_reference))
+                    print(f"         {s.name} {s.media_reference}")
             print("\n     Playheads:")
             for m in p.playheads:
-                print("       {}".format(m.name))
-                print("         Playing: {}".format(m.playing))
-                print("         Looping: {}".format(m.looping))
-                print("        Position: {}".format(m.position))
-                print("         Forward: {}".format(m.play_forward))
-                print("            Mode: {}".format(m.play_mode))
+                print(f"       {m.name}")
+                print(f"         Playing: {m.playing}")
+                print(f"         Looping: {m.looping}")
+                print(f"        Position: {m.position}")
+                print(f"         Forward: {m.play_forward}")
+                print(f"            Mode: {m.play_mode}")
 
     for path in args.add_media:
         if not len(conn.api.app.session.playlists):
             conn.api.app.session.create_playlist()
-        print(str(conn.api.app.session.playlists[0].add_media(path)))
+        print(conn.api.app.session.playlists[0].add_media(path))
 
 
 

@@ -81,10 +81,11 @@ class Connection(object):
            event (tuple): Message.
 
         """
-        if len(event) == 1 and (
-            (type(event[0]) == type(broadcast_down_atom())) or
-            (type(event[0]) == type(api_exit_atom())) or
-            (type(event[0]) == type(exit_atom()))):
+        if len(event) == 1 and type(event[0]) in [
+            type(broadcast_down_atom()),
+            type(api_exit_atom()),
+            type(exit_atom()),
+        ]:
             self.disconnect()
 
 
@@ -252,7 +253,7 @@ class Connection(object):
         Returns:
             user_input(str): String entered by user.
         """
-        return input("Enter key for lock {}: ".format(lock))
+        return input(f"Enter key for lock {lock}: ")
 
     def connect_local(self, actor):
         """Connect to in-process actor.
@@ -261,8 +262,7 @@ class Connection(object):
            actor (actor): Actor object.
         """
         self.disconnect()
-        connected = self.link.connect_local(actor)
-        if connected:
+        if connected := self.link.connect_local(actor):
             self.negotiate()
         else:
             raise RuntimeError("Failed to connect")
@@ -277,10 +277,7 @@ class Connection(object):
         """
         r = RemoteSessionManager(remote_session_path())
         if session is None:
-            if sync_mode:
-                s = r.first_sync()
-            else:
-                s = r.first_api()
+            s = r.first_sync() if sync_mode else r.first_api()
         else:
             s = m.find(session)
         self.connect_remote(s.host(), s.port(), sync_mode, sync_key_callback)
@@ -300,8 +297,7 @@ class Connection(object):
             sync_key_callback = self.get_key_from_stdin
 
         self.disconnect()
-        connected = self.link.connect_remote(host, port)
-        if connected:
+        if connected := self.link.connect_remote(host, port):
             self.negotiate(sync_mode, sync_key_callback)
         else:
             raise RuntimeError("Failed to connect")
@@ -375,10 +371,7 @@ class Connection(object):
         Returns:
             Connection(object): None if not connected.
         """
-        if self.connected:
-            return self.link.remote()
-
-        return None
+        return self.link.remote() if self.connected else None
 
     def request_receive(self, *args):
         """Send message and return response."""
@@ -421,12 +414,7 @@ class Connection(object):
         Args:
            args (args): Arguments to send.
         """
-        result = None
-
-        if self.connected:
-            result = self.link.spawn(*args)
-
-        return result
+        return self.link.spawn(*args) if self.connected else None
 
     def remote_spawn(self, *args):
         """Spawn remote actor
@@ -434,12 +422,7 @@ class Connection(object):
         Args:
            args (args): Arguments to send.
         """
-        result = None
-
-        if self.connected:
-            result = self.link.remote_spawn(*args)
-
-        return result
+        return self.link.remote_spawn(*args) if self.connected else None
 
     def send(self, *args):
         """Send message, ignore reponse

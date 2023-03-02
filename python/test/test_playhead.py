@@ -14,7 +14,7 @@ def test_playhead(spawn):
     m = pl.add_media(os.environ["TEST_RESOURCE"]+"/media/test.mov")
 
     ph = pl.create_playhead()
-    assert isinstance(ph, Playhead) == True
+    assert isinstance(ph, Playhead)
 
     assert ph.playing == False
     assert ph.position == 0
