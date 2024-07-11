@@ -33,12 +33,7 @@ class Media(Container):
         """
 
         result = self.connection.request_receive(self.remote, get_media_source_atom())[0]
-        _media_sources = []
-
-        for i in result:
-            _media_sources.append(MediaSource(self.connection, i.actor, i.uuid))
-
-        return _media_sources
+        return [MediaSource(self.connection, i.actor, i.uuid) for i in result]
 
 
     @property
@@ -198,10 +193,9 @@ class Media(Container):
             list(Bookmark)
         """
         all_bookmarks = self.connection.api.session.bookmarks
-        result = []
-        for bookmark in all_bookmarks.bookmarks:
-            if bookmark.detail.owner.uuid == self.uuid:
-                result.append(bookmark)
-
-        result = sorted(result, key=lambda x: x.detail.start)
-        return result
+        result = [
+            bookmark
+            for bookmark in all_bookmarks.bookmarks
+            if bookmark.detail.owner.uuid == self.uuid
+        ]
+        return sorted(result, key=lambda x: x.detail.start)

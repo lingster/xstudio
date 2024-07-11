@@ -138,7 +138,7 @@ class Filesize(object):
             Bumpf
         """
         if unit not in self.units:
-            raise Exception("Not a valid file size unit: %s" % unit)
+            raise Exception(f"Not a valid file size unit: {unit}")
         if self.size == 1 and unit == "B":
             return "1B"
         exponent = self.units.index(unit)

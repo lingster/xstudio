@@ -95,7 +95,7 @@ def create_item_container(connection, item):
     elif item.item_type() == ItemType.IT_TIMELINE:
         result =  Timeline(connection, item.actor(), item.uuid())
     else:
-        raise RuntimeError("Invalid type " + i.item_type())
+        raise RuntimeError(f"Invalid type {i.item_type()}")
 
     return result
 

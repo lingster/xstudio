@@ -38,18 +38,17 @@ class API(CommonAPI):
             Studio(object): If connected, `None` otherwise
 
         """
-        if self._app is None:
-            if self.connection.app_type in [
-                self.connection.APP_TYPE_XSTUDIO,
-                self.connection.APP_TYPE_XSTUDIO_GUI
-            ]:
-                self._app = Studio(
-                    self.connection,
-                    self.connection.request_receive(
-                        self.connection.remote(),
-                        get_studio_atom()
-                    )[0]
-                )
+        if self._app is None and self.connection.app_type in [
+            self.connection.APP_TYPE_XSTUDIO,
+            self.connection.APP_TYPE_XSTUDIO_GUI,
+        ]:
+            self._app = Studio(
+                self.connection,
+                self.connection.request_receive(
+                    self.connection.remote(),
+                    get_studio_atom()
+                )[0]
+            )
 
         return self._app
 
@@ -220,11 +219,15 @@ class API(CommonAPI):
         Returns:
             status(dict): Dict with status.
         """
-        stat = {}
-
-        stat["cache"] = {"image": {}, "audio": {}, "thumbnail": {"disk": {}, "memory": {}}, }
-        stat["session"] = {"playlist": {}, "media": {}}
-        stat["connection"] = {}
+        stat = {
+            "cache": {
+                "image": {},
+                "audio": {},
+                "thumbnail": {"disk": {}, "memory": {}},
+            },
+            "session": {"playlist": {}, "media": {}},
+            "connection": {},
+        }
 
         try:
             if self.connection.app_version is None:
@@ -269,10 +272,26 @@ class API(CommonAPI):
             print("  Remote:", s["connection"]["host"] + ":" + str(s["connection"]["port"]))
             print("  Detail:", s["connection"]["application"], s["connection"]["type"], s["connection"]["version"])
             print("Cache:")
-            print("  Image:", s["cache"]["image"]["count"], str(Filesize(s["cache"]["image"]["size"])),)
-            print("  Audio:", s["cache"]["audio"]["count"], str(Filesize(s["cache"]["audio"]["size"])),)
-            print("  Thumbnail Dsk:", s["cache"]["thumbnail"]["disk"]["count"], str(Filesize(s["cache"]["thumbnail"]["disk"]["size"])),)
-            print("  Thumbnail Mem:", s["cache"]["thumbnail"]["memory"]["count"], str(Filesize(s["cache"]["thumbnail"]["memory"]["size"])),)
+            print(
+                "  Image:",
+                s["cache"]["image"]["count"],
+                Filesize(s["cache"]["image"]["size"]),
+            )
+            print(
+                "  Audio:",
+                s["cache"]["audio"]["count"],
+                Filesize(s["cache"]["audio"]["size"]),
+            )
+            print(
+                "  Thumbnail Dsk:",
+                s["cache"]["thumbnail"]["disk"]["count"],
+                Filesize(s["cache"]["thumbnail"]["disk"]["size"]),
+            )
+            print(
+                "  Thumbnail Mem:",
+                s["cache"]["thumbnail"]["memory"]["count"],
+                Filesize(s["cache"]["thumbnail"]["memory"]["size"]),
+            )
             print("Session:")
             print("  Path:", s["session"]["path"])
             print("  Playlists:", s["session"]["playlist"]["count"])

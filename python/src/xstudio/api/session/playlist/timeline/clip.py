@@ -37,10 +37,7 @@ class Clip(Container):
             item(Item): Media for Clip.
         """
         m = self.connection.request_receive(self.remote, get_media_atom())[0]
-        if m.uuid.is_null():
-            return None
-
-        return Media(self.connection, m.actor, m.uuid)
+        return None if m.uuid.is_null() else Media(self.connection, m.actor, m.uuid)
 
     @property
     def enabled(self):

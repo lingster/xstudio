@@ -94,11 +94,11 @@ class PlaylistUI(QWidget):
 
     def onCheckboxClicked(self, state):
 
-        selected_items = []
-        for (checkbox, media_item) in self.playlistItems:
-            if checkbox.checkState() == Qt.Checked:
-                selected_items.append(media_item.uuid)
-
+        selected_items = [
+            media_item.uuid
+            for checkbox, media_item in self.playlistItems
+            if checkbox.checkState() == Qt.Checked
+        ]
         playlist = XSTUDIO.api.session.playlists[0]
 
         # Ensure we have a playhead

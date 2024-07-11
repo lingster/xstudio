@@ -53,7 +53,7 @@ def test_add_remove_media(spawn):
     (pl_uuid, pl) = s.create_playlist("TEST")
 
     m = pl.add_media(os.environ["TEST_RESOURCE"]+"/media/test.mov")
-    assert isinstance(m, Media) == True
+    assert isinstance(m, Media)
 
     ml = pl.add_media_list(os.environ["TEST_RESOURCE"]+"/media", True)
 
@@ -73,8 +73,8 @@ def test_move_media(spawn):
 
     m1 = pl.add_media(os.environ["TEST_RESOURCE"]+"/media/test.mov")
     m2 = pl.add_media(os.environ["TEST_RESOURCE"]+"/media/test.mov")
-    assert isinstance(m1, Media) == True
-    assert isinstance(m2, Media) == True
+    assert isinstance(m1, Media)
+    assert isinstance(m2, Media)
 
     # check current order.
     plm = pl.media

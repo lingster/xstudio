@@ -55,11 +55,7 @@ class Bookmarks(Container):
             bookmarks(list[Bookmark]): List of bookmarks.
         """
         result = self.connection.request_receive(self.remote, get_bookmarks_atom())[0]
-        bookmarks = []
-        for i in result:
-            bookmarks.append(Bookmark(self.connection, i.actor, i.uuid))
-
-        return bookmarks
+        return [Bookmark(self.connection, i.actor, i.uuid) for i in result]
 
     def add_bookmark(self, target=None):
         """Add bookmark

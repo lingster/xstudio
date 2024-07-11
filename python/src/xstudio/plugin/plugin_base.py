@@ -162,10 +162,12 @@ class PluginBase(ActorConnection):
         try:
             if not self.__attribute_changed or len(message_content) < 4:
                 return
-            if type(message_content[0]) == type(change_attribute_event_atom()):
-                if str(message_content[2]) in self.attributes:
-                    self.__attribute_changed(
-                        self.attributes[str(message_content[2])]
-                        )
+            if (
+                type(message_content[0]) == type(change_attribute_event_atom())
+                and str(message_content[2]) in self.attributes
+            ):
+                self.__attribute_changed(
+                    self.attributes[str(message_content[2])]
+                    )
         except Exception as err:
             print (err)

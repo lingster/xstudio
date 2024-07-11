@@ -12,13 +12,13 @@ def test_media_stream(spawn):
     (pl_uuid, pl) = s.create_playlist("TEST")
 
     m = pl.add_media(os.environ["TEST_RESOURCE"]+"/media/test.mov")
-    assert isinstance(m, Media) == True
+    assert isinstance(m, Media)
 
     msrc = m.media_source()
-    assert isinstance(msrc, MediaSource) == True
+    assert isinstance(msrc, MediaSource)
 
     mstr = msrc.image_stream
-    assert isinstance(mstr, MediaStream) == True
+    assert isinstance(mstr, MediaStream)
 
     assert mstr.media_type == MediaType.MT_IMAGE
 

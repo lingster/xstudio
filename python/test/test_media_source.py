@@ -10,10 +10,10 @@ def test_media_source(spawn):
     (pl_uuid, pl) = s.create_playlist("TEST")
 
     m = pl.add_media(os.environ["TEST_RESOURCE"]+"/media/test.mov")
-    assert isinstance(m, Media) == True
+    assert isinstance(m, Media)
 
     ms = m.media_source()
-    assert isinstance(ms, MediaSource) == True
+    assert isinstance(ms, MediaSource)
 
     mr = ms.media_reference
 

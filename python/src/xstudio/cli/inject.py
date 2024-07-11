@@ -14,8 +14,8 @@ def inject_main():
     """Do main function."""
     retval = 0
     parser = argparse.ArgumentParser(
-        description=__doc__ + " Injects media into xStudio.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        description=f"{__doc__} Injects media into xStudio.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     parser.add_argument(
@@ -65,9 +65,9 @@ def inject_main():
         for path in args.media:
             try:
                 path = os.path.abspath(path)
-                print("Added "+str(len(pl.add_media_list(path, True)))+" Media items.")
+                print(f"Added {len(pl.add_media_list(path, True))} Media items.")
             except ValueError as err:
-                print(str(err))
+                print(err)
     else:
         # try stdin
         while True:
@@ -79,13 +79,12 @@ def inject_main():
             if not line:
                 break
 
-            path = line.strip()
-            if path:
+            if path := line.strip():
                 try:
                     path = os.path.abspath(path)
-                    print("Added "+str(len(pl.add_media_list(path, True)))+" Media items.")
+                    print(f"Added {len(pl.add_media_list(path, True))} Media items.")
                 except ValueError as err:
-                    print(str(err))
+                    print(err)
 
     conn.disconnect()
 

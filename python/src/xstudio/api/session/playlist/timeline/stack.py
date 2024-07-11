@@ -116,12 +116,9 @@ class Stack(Container):
         Returns:
             children([Gap/Track/Clip/Stack]): Children.
         """
-        children = []
-
-        for i in self.item.children():
-            children.append(create_item_container(self.connection, i))
-
-        return children
+        return [
+            create_item_container(self.connection, i) for i in self.item.children()
+        ]
 
     def children_of_type(self, types):
         """Get children matching types.

@@ -36,12 +36,13 @@ class Bookmark(Container):
         Returns:
             result(MediaSource): The bookmark's detail 
         """
-        result = None
-
-        if self.detail.owner and self.detail.owner.actor:            
-            result = MediaSource(self.connection, self.detail.owner.actor, self.detail.owner.uuid)
-
-        return result
+        return (
+            MediaSource(
+                self.connection, self.detail.owner.actor, self.detail.owner.uuid
+            )
+            if self.detail.owner and self.detail.owner.actor
+            else None
+        )
 
     @property
     def enabled(self):

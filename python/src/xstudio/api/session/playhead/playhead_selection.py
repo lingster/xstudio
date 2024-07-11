@@ -48,14 +48,9 @@ class PlayheadSelection(Container):
         Returns:
             clips(list[Media]): Current media items in order.
          """
-        clips = []
-
         result = self.connection.request_receive(self.remote, get_selected_sources_atom())[0]
 
-        for i in result:
-            clips.append(Media(self.connection, i))
-
-        return clips
+        return [Media(self.connection, i) for i in result]
 
     def set_selection(self, media_uuids):
         """Select the media items

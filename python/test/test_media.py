@@ -10,11 +10,11 @@ def test_add_remove_media(spawn):
     (pl_uuid, pl) = s.create_playlist("TEST")
 
     m = pl.add_media(os.environ["TEST_RESOURCE"]+"/media/test.mov")
-    assert isinstance(m, Media) == True
+    assert isinstance(m, Media)
 
     assert m.acquire_metadata() == True
     assert m.metadata["metadata"]["media"]["@"]["format"]["bit_rate"] == "9761984"
-    assert isinstance(m.media_source(), MediaSource) == True
+    assert isinstance(m.media_source(), MediaSource)
 
     assert pl.remove_media(m) == True
     assert s.remove_container(pl_uuid) == True

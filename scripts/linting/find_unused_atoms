@@ -36,7 +36,7 @@ def find_atom_instances_in_source_file(cpp_file, atom_names, suffix):
         cpp_code = "".join(data)
 
         for atom_name in atom_names.keys():
-            if cpp_code.find(atom_name+suffix) != -1:
+            if atom_name + suffix in cpp_code:
                 atom_names[atom_name] = atom_names[atom_name]+1
 
 def find_atom_reference_in_source_file(cpp_file, atom_names):
@@ -51,7 +51,7 @@ def find_atom_reference_in_source_file(cpp_file, atom_names):
                     cpp_code
                     )
         for a in m:
-            if not a in atom_names:
+            if a not in atom_names:
                 print ("Not found {0}".format(a))
 
 def parse_atoms_hpp():
@@ -59,17 +59,13 @@ def parse_atoms_hpp():
     r = []
     with open("include/xstudio/atoms.hpp") as f:
 
-        line = f.readline()
-        while line:
+        while line := f.readline():
+            if m := re.search(
+                "CAF_ADD_ATOM\\(([^\\,]+)\\,([^\\,]+)\\,\\s*([^\\)]+)\\s*\\)",
+                line,
+            ):
+                r.append(m[3])
 
-            m = re.search(
-                    "CAF_ADD_ATOM\\(([^\\,]+)\\,([^\\,]+)\\,\\s*([^\\)]+)\\s*\\)",
-                    line
-                    )
-            if m:
-                r.append(m.group(3))
-
-            line = f.readline()
     return r            
             
 
@@ -101,7 +97,7 @@ if __name__=="__main__":
         find_atom_reference_in_source_file(py_file, result)
 
     count = 0
-    for r in result.keys():
+    for r in result:
         if not result[r]:
             print ("{0} : {1}".format(r, result[r]))
             count+=1

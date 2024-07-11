@@ -22,17 +22,19 @@ class QuickFutureConan(ConanFile):
 
     def make(self, args=[]):
         if platform.system() == "Windows":
-            self.run("nmake %s" % " ".join(args))
+            self.run(f'nmake {" ".join(args)}')
         else:
-            self.run("make %s" % " ".join(args))
+            self.run(f'make {" ".join(args)}')
 
     def qmake(self, args=[]):
-        cmd = "qmake %s" % (" ".join(args))
+        cmd = f'qmake {" ".join(args)}'
         self.run(cmd)
 
     def build(self):
-        args = ["%s/buildlib/buildlib.pro" % self.source_folder,
-                "INSTALL_ROOT=%s" % self.package_folder]
+        args = [
+            f"{self.source_folder}/buildlib/buildlib.pro",
+            f"INSTALL_ROOT={self.package_folder}",
+        ]
 
         if self.options.plugin:
             self.options.shared = True
@@ -49,11 +51,11 @@ class QuickFutureConan(ConanFile):
     def package(self):
         self.make(["install"])
 
-        qconanextra_json = {}
-        qconanextra_json["plugin"] = "QuickFutureQmlPlugin"
-        qconanextra_json["import_static_qml_plugin"] = "QuickFutureQmlPlugin:QuickFuture"
-        qconanextra_json["qml_import_path"] = ""
-
+        qconanextra_json = {
+            "plugin": "QuickFutureQmlPlugin",
+            "import_static_qml_plugin": "QuickFutureQmlPlugin:QuickFuture",
+            "qml_import_path": "",
+        }
         with open(os.path.join(self.package_folder, "qconanextra.json"), "w") as file:
             file.write(json.dumps(qconanextra_json))
             file.close()

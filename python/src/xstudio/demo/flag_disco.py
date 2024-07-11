@@ -17,7 +17,7 @@ def animate_flags(session, cycles=100):
 
     children = session.playlist_tree.children
 
-    for i in range(0, cycles):
+    for _ in range(cycles):
         session.reflag_container(
             "#{:02X}{:02X}{:02X}".format(
                 random.randint(0, 255),
